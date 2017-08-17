@@ -22,8 +22,6 @@ public class TransactionTest {
         Options options = new Options();
         db = factory.open(new File("ldb"), options);
 
-        ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-
         boolean error = true;
 
         db.put("Account:A".getBytes(),"1000".getBytes());
@@ -65,6 +63,8 @@ public class TransactionTest {
 
         System.out.println("New Account:A - "+asString(db.get("Account:A".getBytes())));
         System.out.println("New Account:B - "+asString(db.get("Account:B".getBytes())));
+
+        System.out.println("Is Transaction Committed : " + t1.isCommited);
 
 
 
