@@ -24,113 +24,50 @@ public class TransactionTest {
 
         ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 
-        // Transaction t1
+        boolean error = true;
+
+        db.put("Account:A".getBytes(),"1000".getBytes());
+        db.put("Account:B".getBytes(),"3000".getBytes());
+
+        System.out.println("Initial Account:A - "+asString(db.get("Account:A".getBytes())));
+        System.out.println("Initial Account:B - "+asString(db.get("Account:B".getBytes())));
+
+        // B sends 500 to A's account from his account
+        int amount =500;
 
         Transaction t1 = new Transaction(db);
-        transactions.add(t1);
 
         try {
-            t1.put("a.1".getBytes(),"a1".getBytes());
-            t1.put("a.2".getBytes(),"a2".getBytes());
-            t1.put("a.3".getBytes(),"a3".getBytes());
 
-            if(false){
-                throw new Exception("lol");
+            int initalB = Integer.parseInt(asString(t1.get("Account:B".getBytes())));
+            int newB = initalB - amount;
+
+            t1.put("Account:B".getBytes(),Integer.toString(newB).getBytes());
+
+            if(!error){ // TODO toggle error and check change in results
+                throw new Exception("CRASH!");
             }
+
+            int initialA = Integer.parseInt(asString(t1.get("Account:A".getBytes())));
+            int newA = initialA + amount;
+
+            t1.put("Account:A".getBytes(),Integer.toString(newA).getBytes());
 
             t1.commit(db);
 
         }catch (Exception ex){
 
             t1.rollback(db);
+
         }
 
         t1.close();
 
-        // Transaction t2
-
-        Transaction t2 = new Transaction(db);
-        transactions.add(t2);
-
-        try {
-            t2.put("b.1".getBytes(),"b1".getBytes());
-            t2.put("b.2".getBytes(),"b2".getBytes());
-            t2.put("b.3".getBytes(),"b3".getBytes());
-
-            if(false){
-                throw new Exception("lol");
-            }
-
-            t2.commit(db);
-
-        }catch (Exception ex){
-
-            t2.rollback(db);
-
-        }
-
-        t2.close();
-
-        // Transaction t3
-
-        Transaction t3 = new Transaction(db);
-        transactions.add(t3);
-
-        try {
-            t3.put("a.1".getBytes(),"c1".getBytes());
-            t3.put("a.2".getBytes(),"c2".getBytes());
-            t3.put("a.3".getBytes(),"c3".getBytes());
-
-            if(false){
-                throw new Exception("lol");
-            }
+        System.out.println("New Account:A - "+asString(db.get("Account:A".getBytes())));
+        System.out.println("New Account:B - "+asString(db.get("Account:B".getBytes())));
 
 
-            t3.commit(db);
 
-        }catch (Exception ex){
-
-            t3.rollback(db);
-
-        }
-
-        t3.close();
-
-        Transaction t4 = new Transaction(db);
-        transactions.add(t4);
-
-        try {
-            t4.delete("b.1".getBytes());
-            t4.delete("b.2".getBytes());
-            t4.delete("b.3".getBytes());
-
-            if(true){
-                throw new Exception("lol");
-            }
-
-
-            t4.commit(db);
-
-        }catch (Exception ex){
-
-            t4.rollback(db);
-
-        }
-
-        t4.close();
-
-        DBIterator it = db.iterator();
-        it.seekToFirst();
-
-        while (it.hasNext()){
-            String key = asString(it.peekNext().getKey());
-            System.out.print(key + " : ");
-
-            Transaction t5 = new Transaction(db);
-
-            System.out.println(asString(t5.get(key.getBytes())));
-            it.next();
-        }
     }
 
 }
