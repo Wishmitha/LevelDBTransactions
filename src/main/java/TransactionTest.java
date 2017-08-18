@@ -24,6 +24,8 @@ public class TransactionTest {
 
         boolean error = true;
 
+        // initial amounts of A and B accounts
+
         db.put("Account:A".getBytes(),"1000".getBytes());
         db.put("Account:B".getBytes(),"3000".getBytes());
 
@@ -33,17 +35,17 @@ public class TransactionTest {
         // B sends 500 to A's account from his account
         int amount =500;
 
-        Transaction t1 = new Transaction(db);
+        Transaction t1 = new Transaction(db); // transaction initialization
 
         try {
 
             int initalB = Integer.parseInt(asString(db.get("Account:B".getBytes())));
             int newB = initalB - amount;
 
-            t1.put("Account:B".getBytes(),Integer.toString(newB).getBytes());
+            t1.put("Account:B".getBytes(),Integer.toString(newB).getBytes()); // The amount is reduced from B's account
 
-            if(!error){ // TODO toggle error and check change in results
-                throw new Exception("CRASH!");
+            if(!error){ // TODO toggle error and check the change in results
+                throw new Exception("CRASH!"); // won't be able to add the amount to A if the errors
             }
 
             int initialA = Integer.parseInt(asString(db.get("Account:A".getBytes())));
@@ -66,7 +68,7 @@ public class TransactionTest {
 
         System.out.println("Is Transaction Committed : " + t1.isCommited);
 
-        Transaction t2 = new Transaction(db);
+        Transaction t2 = new Transaction(db); // transaction to test delete operation
 
         try {
 

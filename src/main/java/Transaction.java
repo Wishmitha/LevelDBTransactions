@@ -1,5 +1,4 @@
 import org.iq80.leveldb.DB;
-import org.iq80.leveldb.ReadOptions;
 import org.iq80.leveldb.WriteBatch;
 
 import java.io.IOException;
