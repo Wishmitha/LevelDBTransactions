@@ -37,7 +37,7 @@ public class TransactionTest {
 
         try {
 
-            int initalB = Integer.parseInt(asString(t1.get("Account:B".getBytes())));
+            int initalB = Integer.parseInt(asString(db.get("Account:B".getBytes())));
             int newB = initalB - amount;
 
             t1.put("Account:B".getBytes(),Integer.toString(newB).getBytes());
@@ -46,7 +46,7 @@ public class TransactionTest {
                 throw new Exception("CRASH!");
             }
 
-            int initialA = Integer.parseInt(asString(t1.get("Account:A".getBytes())));
+            int initialA = Integer.parseInt(asString(db.get("Account:A".getBytes())));
             int newA = initialA + amount;
 
             t1.put("Account:A".getBytes(),Integer.toString(newA).getBytes());
@@ -66,6 +66,22 @@ public class TransactionTest {
 
         System.out.println("Is Transaction Committed : " + t1.isCommited);
 
+        Transaction t2 = new Transaction(db);
+
+        try {
+
+            t2.delete("Account:A".getBytes());
+            t2.delete("Account:B".getBytes());
+
+            t2.commit(db);
+
+        }catch (Exception ex){
+
+            t2.rollback(db);
+
+        }
+
+        t2.close();
 
 
     }

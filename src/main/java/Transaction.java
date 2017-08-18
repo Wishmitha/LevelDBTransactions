@@ -9,12 +9,10 @@ import java.io.IOException;
  */
 public class Transaction {
 
-    DB db;
     WriteBatch batch;
     boolean isCommited;
 
     public Transaction(DB db){
-        this.db = db;
         this.batch = db.createWriteBatch();
     }
 
@@ -24,7 +22,6 @@ public class Transaction {
 
     public void commit(DB db){
         db.write(this.batch);
-        this.db = db;
         this.isCommited = true;
     }
 
@@ -41,7 +38,4 @@ public class Transaction {
         this.batch.delete(key);
     }
 
-    public byte[] get (byte[] key){
-        return this.db.get(key,new ReadOptions().snapshot(db.getSnapshot()));
-    }
 }
