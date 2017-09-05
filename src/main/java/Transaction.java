@@ -1,22 +1,33 @@
+import org.apache.log4j.Logger;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.WriteBatch;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wishmitha on 8/17/17.
  */
 public class Transaction {
 
-    WriteBatch batch;
+    private WriteBatch batch;
     boolean isCommited;
+
+    private static final Logger log = Logger.getLogger(Transaction.class);
+
+    private Map<String, byte[]> updates = new HashMap<String, byte[]>();
 
     public Transaction(DB db){
         this.batch = db.createWriteBatch();
     }
 
-    public void close() throws IOException {
-        this.batch.close();
+    public void close() {
+        try {
+            this.batch.close();
+        } catch (IOException e) {
+            log.error("Error occured while closing ",e);
+        }
     }
 
     public void commit(DB db){
@@ -25,8 +36,18 @@ public class Transaction {
     }
 
     public void rollback(DB db) {
+        this.updates = new HashMap<String, byte[]>();
         this.batch = db.createWriteBatch();
         this.isCommited = false;
+    }
+
+    public void setKey(String key, byte[] value){
+        updates.put(key,value);
+        batch.put(key.getBytes(),value);
+    }
+
+    public byte[] getKey(String key){
+        return updates.get(key);
     }
 
     public void put(byte[] key, byte[] value){
